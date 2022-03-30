@@ -1,10 +1,17 @@
-import React from 'react';
-import './App.css';
+import React, { Component, Fragment } from "react";
+import FormularioCadastro from "./components/FormularioCadastro/FormularioCadastro";
+import Container from "@mui/material/Container";
+import "./App.css";
 
-function App() {
-  return (
-   <h1>Formulario de Cadastro</h1>
-  );
+class App extends Component {
+  render() {
+    return (
+      <Container>
+        <h1>Formulario de Cadastro</h1>
+        <FormularioCadastro />
+      </Container>
+    );
+  }
 }
 
 export default App;
