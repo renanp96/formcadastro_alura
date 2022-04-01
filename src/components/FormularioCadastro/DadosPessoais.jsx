@@ -84,9 +84,11 @@ function DadosPessoais({ enviar, validarCPF }) {
           />
         }
       />
-
       <Button type="submit" variant="contained" color="primary">
-        Cadastrar
+        Voltar
+      </Button>
+      <Button type="submit" variant="contained" color="primary">
+        Proximo
       </Button>
     </form>
   );
