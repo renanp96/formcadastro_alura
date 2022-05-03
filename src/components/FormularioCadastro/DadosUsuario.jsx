@@ -1,15 +1,37 @@
 import { Button, TextField } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import ValidacoesCadastro from "../../contexts/ValidacoesCadastro";
 
 function DadosUsuario({ enviar }) {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [errors, setErrors] = useState({ senha: { valido: true, texto: "" } });
 
+  const validacoes = useContext(ValidacoesCadastro);
+  function validarCampos(event){
+    const {name, value} = event.target;
+    const novoEstado = {...errors};
+    novoEstado[name] = validacoes[name](value);
+
+    setErrors(novoEstado);
+  }
+
+  function enviarForm(){
+    for(let campo in errors){
+      if(!errors[campo].valido){
+        return false;
+      }
+    }
+    return true;
+  }
+    
   return (
     <form
       onSubmit={(event) => {
         event.preventDefault();
-        enviar({email, senha});
+        if(enviarForm()){
+          enviar({email, senha});
+        }
       }}
     >
       <TextField
@@ -30,7 +52,11 @@ function DadosUsuario({ enviar }) {
         onChange={(event) => {
           setSenha(event.target.value);
         }}
+        onBlur={validarCampos}
+        error={errors.senha.valido}
+        helperText={errors.senha.texto}
         id="senha"
+        name="senha"
         label="senha"
         type="password"
         variant="outlined"

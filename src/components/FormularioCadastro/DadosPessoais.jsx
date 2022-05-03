@@ -1,9 +1,8 @@
-import React from "react";
-
-import { useState } from "react";
+import React, { useState, useContext } from "react"
 import { Button, TextField, Switch, FormControlLabel } from "@mui/material";
+import ValidacoesCadastro from "../../contexts/ValidacoesCadastro";
 
-function DadosPessoais({ enviar, validarCPF }) {
+function DadosPessoais({ enviar }) {
   const [nome, setNome] = useState("");
   const [sobrenome, setSobrenome] = useState("");
   const [cpf, setCPF] = useState("");
@@ -11,11 +10,31 @@ function DadosPessoais({ enviar, validarCPF }) {
   const [novidades, setNovidades] = useState(true);
   const [errors, setErrors] = useState({ cpf: { valido: true, texto: "" } });
 
+  const validacoes = useContext(ValidacoesCadastro);
+  function validarCampos(event){
+    const {name, value} = event.target;
+    const novoEstado = {...errors};
+    novoEstado[name] = validacoes[name](value);
+
+    setErrors(novoEstado);
+  }
+
+  function enviarForm(){
+    for(let campo in errors){
+      if(!errors[campo].valido){
+        return false;
+      }
+    }
+    return true;
+  }
+
   return (
     <form
       onSubmit={(event) => {
         event.preventDefault();
-        enviar({ nome, sobrenome, cpf, novidades, promocoes });
+        if(enviarForm()){
+          enviar({ nome, sobrenome, cpf, novidades, promocoes });
+        }
       }}
     >
       <TextField
@@ -45,13 +64,11 @@ function DadosPessoais({ enviar, validarCPF }) {
         onChange={(event) => {
           setCPF(event.target.value);
         }}
-        onBlur={(event) => {
-          const valido = validarCPF(event.target.value);
-          setErrors({ cpf: valido });
-        }}
+        onBlur={validarCampos}
         error={!errors.cpf.valido}
         helperText={errors.cpf.texto}
-        id="cpf"
+        id="CPF"
+        name="cpf"
         label="CPF"
         variant="outlined"
         margin="normal"
